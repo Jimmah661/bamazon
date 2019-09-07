@@ -44,7 +44,11 @@ function itemChoice(selection) {
     ]).then(function (data) {
         selection.forEach(function (value) {
             if (value.item_id === data.chosen && data.quantity <= value.stock_quantity) {
-                console.log("Thats fine")
+                console.log("Total Cost: " + (data.quantity * value.price));
+                var query = "UPDATE products SET stock_quantity = stock_quantity - " + data.quantity + " WHERE item_id = " + value.item_id;
+                connection.query(query, function (err) {
+                    if (err) throw err;
+                })
             } else if (value.item_id === data.chosen && data.quantity > value.stock_quantity) {
                 console.log("Sorry, There isn't enough stock to fulfil that order")
             }
