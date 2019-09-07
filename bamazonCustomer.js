@@ -23,17 +23,32 @@ function checkItems() {
         console.log("Items Currently available:\n")
         console.table(res)
         itemChoice(res)
-
     })
 }
 
-function itemChoice(res) {
+function itemChoice(selection) {
+    let numbers = selection.map(a => a.item_id);
+    // console.log(result)
     inq.prompt([
         {
             type: 'list',
             message: 'which item would you like to purchase?',
-            name: "itemChoice",
-            choices: res
+            name: "chosen",
+            choices: numbers
+        }, {
+            type: 'number',
+            message: 'How many would you like to purchase?',
+            name: 'quantity',
+
         }
-    ]).then(function (data) { console.log(data); connection.end() })
-}
+    ]).then(function (data) {
+        selection.forEach(function (value) {
+            if (value.item_id === data.chosen && data.quantity <= value.stock_quantity) {
+                console.log("Thats fine")
+            } else if (value.item_id === data.chosen && data.quantity > value.stock_quantity) {
+                console.log("Sorry, There isn't enough stock to fulfil that order")
+            }
+        })
+        connection.end();
+    })
+};
